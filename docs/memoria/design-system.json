@@ -1,0 +1,52 @@
+{
+  "project": "MovaCRM",
+  "concept": "Profissional e direto. Interface que sai do caminho e deixa o trabalho acontecer.",
+  "colors": {
+    "primary": "#0F172A",
+    "accent": "#F97316",
+    "background": "#F8FAFC",
+    "surface": "#FFFFFF",
+    "text": "#1E293B",
+    "muted": "#94A3B8",
+    "success": "#22C55E",
+    "danger": "#EF4444",
+    "warning": "#EAB308",
+    "border": "#E2E8F0"
+  },
+  "typography": {
+    "display": "Bricolage Grotesque",
+    "body": "Plus Jakarta Sans",
+    "mono": "JetBrains Mono",
+    "weights": {
+      "light": 300,
+      "regular": 400,
+      "medium": 500,
+      "semibold": 600,
+      "bold": 700,
+      "extrabold": 800
+    }
+  },
+  "spacing": {
+    "base": "8px",
+    "scale": [4, 8, 12, 16, 24, 32, 48, 64, 96]
+  },
+  "borderRadius": {
+    "sm": "4px",
+    "md": "8px",
+    "lg": "12px",
+    "xl": "16px",
+    "full": "9999px"
+  },
+  "shadows": {
+    "sm": "0 1px 2px 0 rgb(0 0 0 / 0.05)",
+    "md": "0 4px 6px -1px rgb(0 0 0 / 0.07)",
+    "lg": "0 10px 15px -3px rgb(0 0 0 / 0.08)"
+  },
+  "principles": [
+    "Interface que sai do caminho — o trabalho é o protagonista",
+    "Laranja apenas em ações primárias e alertas, nunca decorativo",
+    "Tabelas com zebra striping leve para leiturabilidade",
+    "Bordas sutis, sombras mínimas, hierarquia clara",
+    "Densidade alta de informação sem sensação de caos"
+  ]
+}

@@ -1,0 +1,80 @@
+/* MovaCRM — Design Tokens */
+/* Conceito: Interface profissional que sai do caminho e deixa o trabalho acontecer */
+
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,700;12..96,800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  /* ─── Cores ─── */
+  --color-primary:     #0F172A;
+  --color-accent:      #F97316;
+  --color-accent-hover:#EA6C0A;
+  --color-background:  #F8FAFC;
+  --color-surface:     #FFFFFF;
+  --color-text:        #1E293B;
+  --color-muted:       #94A3B8;
+  --color-border:      #E2E8F0;
+  --color-success:     #22C55E;
+  --color-danger:      #EF4444;
+  --color-warning:     #EAB308;
+
+  /* Status de veículo */
+  --color-status-disponivel: #22C55E;
+  --color-status-alugado:    #F97316;
+  --color-status-manutencao: #EAB308;
+
+  /* Status de pagamento */
+  --color-pago:     #22C55E;
+  --color-pendente: #EAB308;
+  --color-atrasado: #EF4444;
+
+  /* Kanban colunas */
+  --color-kanban-lead:       #94A3B8;
+  --color-kanban-qualif:     #60A5FA;
+  --color-kanban-proposta:   #A78BFA;
+  --color-kanban-negociacao: #F97316;
+  --color-kanban-fechado:    #22C55E;
+  --color-kanban-renovacao:  #0F172A;
+
+  /* ─── Tipografia ─── */
+  --font-display: 'Bricolage Grotesque', sans-serif;
+  --font-body:    'Plus Jakarta Sans', sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
+
+  --text-xs:   0.75rem;
+  --text-sm:   0.875rem;
+  --text-base: 1rem;
+  --text-lg:   1.125rem;
+  --text-xl:   1.25rem;
+  --text-2xl:  1.5rem;
+  --text-3xl:  1.875rem;
+  --text-4xl:  2.25rem;
+
+  /* ─── Espaçamento (base 8px) ─── */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-24: 96px;
+
+  /* ─── Bordas ─── */
+  --radius-sm:  4px;
+  --radius-md:  8px;
+  --radius-lg:  12px;
+  --radius-xl:  16px;
+  --radius-full: 9999px;
+
+  /* ─── Sombras ─── */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.07);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.08);
+
+  /* ─── Sidebar ─── */
+  --sidebar-width: 240px;
+  --sidebar-bg:    #0F172A;
+  --sidebar-text:  #94A3B8;
+  --sidebar-active:#F97316;
+}
