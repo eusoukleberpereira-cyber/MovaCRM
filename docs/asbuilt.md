@@ -9,21 +9,21 @@
 ## Roadmap de Implementação
 
 ### 🔵 FASE 01: FUNDAÇÃO
-**Status:** `⏳ Aguardando`
-**Progresso:** 0/7 tarefas (0%)
+**Status:** `✅ Completa`
+**Progresso:** 7/7 tarefas (100%)
 
 #### Tarefas:
-- [ ] Setup projeto Next.js 15 (App Router + TypeScript)
-- [ ] Configurar repositório GitHub com GitFlow (dev, hml, main)
-- [ ] Criar projeto Supabase + configurar variáveis de ambiente
-- [ ] Conectar Vercel ao repositório (deploy automático via main)
-- [ ] Aplicar design tokens e fontes (Bricolage Grotesque + Plus Jakarta Sans)
-- [ ] Implementar autenticação com Supabase Auth (login por email/senha)
-- [ ] Criar database schema completo + RLS
+- [x] Setup projeto Next.js 16 (App Router + TypeScript + Tailwind v4)
+- [x] Configurar repositório GitHub com GitFlow (dev, hml, main)
+- [x] Criar projeto Supabase + configurar variáveis de ambiente
+- [x] Conectar Vercel ao repositório (deploy automático via main)
+- [x] Aplicar design tokens e fontes (Bricolage Grotesque + Plus Jakarta Sans)
+- [x] Implementar autenticação com Supabase Auth (login por email/senha)
+- [x] Criar database schema completo + RLS (10 tabelas, todos com RLS ON)
 
-**Testável:** Sim — Login funcional com redirecionamento por perfil
-**Notas:** Vault de credenciais criado via DPAPI (Windows)
-**Último trabalho:** —
+**Testável:** Login funcional em https://movacrm-three.vercel.app
+**Notas:** Next.js 16 usa `proxy.ts` em vez de `middleware.ts`. Token GitHub no vault (~/.shark/vaults/movacrm/github_token.vault). Token Vercel no vault (~/.shark/vaults/movacrm/vercel_token.vault). URL produção: https://movacrm-three.vercel.app
+**Último trabalho:** 2026-05-30 — Deploy produção bem-sucedido — dpl_CEb9FNrXGBk6ghDyFysumRhhbRMB
 
 ---
 
