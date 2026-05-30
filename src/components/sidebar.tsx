@@ -4,7 +4,7 @@ import { usePathname, useRouter } from "next/navigation"
 import { useProfile } from "@/hooks/use-profile"
 import { createClient } from "@/lib/supabase/client"
 import {
-  LayoutDashboard, Car, Users, FileText, CreditCard, LogOut, Columns3, Settings,
+  LayoutDashboard, Car, Users, FileText, CreditCard, LogOut, Columns3, Settings, MessageCircle,
 } from "lucide-react"
 import { clsx } from "clsx"
 
@@ -14,6 +14,7 @@ const NAV = [
   { href: "/dashboard/clientes",  label: "Clientes",   icon: Users,           roles: ["admin","atendente","financeiro","comercial"] },
   { href: "/dashboard/contratos", label: "Contratos",  icon: FileText,        roles: ["admin","atendente","financeiro","comercial"] },
   { href: "/dashboard/kanban",    label: "Kanban",     icon: Columns3,        roles: ["admin","atendente","comercial"] },
+  { href: "/dashboard/inbox",     label: "Inbox",      icon: MessageCircle,   roles: ["admin","atendente","comercial"] },
   { href: "/dashboard/pagamentos",    label: "Pagamentos",    icon: CreditCard,      roles: ["admin","financeiro"] },
   { href: "/dashboard/configuracoes", label: "Configurações", icon: Settings,        roles: ["admin"] },
 ]
