@@ -128,17 +128,17 @@
 ---
 
 ### 🔵 FASE 08: CONFIGURAÇÕES & GESTÃO DE USUÁRIOS
-**Status:** `⏳ Aguardando`
-**Progresso:** 0/3 tarefas (0%)
+**Status:** `✅ Completa`
+**Progresso:** 3/3 tarefas (100%)
 
 #### Tarefas:
-- [ ] Tela de configurações da locadora (nome, logo)
-- [ ] Gestão de usuários (criar, editar, desativar) com atribuição de perfil
-- [ ] Página de configuração Z-API integrada às configurações
+- [x] Tela de configurações da locadora (nome, logo)
+- [x] Gestão de usuários (criar, editar, desativar) com atribuição de perfil
+- [x] Página de configuração Z-API integrada às configurações
 
 **Testável:** Sim — Admin cria usuário, usuário loga com perfil correto
-**Notas:** —
-**Último trabalho:** —
+**Notas:** API /api/users usa service role. Senha temporária gerada: `MovaCRM@{ano}!`. Admin não consegue remover a própria conta.
+**Último trabalho:** 2026-05-31 — Commit a640d4e — feat(settings): gestão de usuários, dados da locadora e configurações em abas
 
 ---
 
@@ -169,3 +169,4 @@
 | Data | O que foi feito |
 |------|----------------|
 | 2026-05-30 | Especificação completa com Shiva. Roadmap criado pelo Hades. Fase 01 aguardando Atlas. |
+| 2026-05-31 | Fase 08 completa — API de usuários (GET/POST/PATCH/DELETE), página de configurações com 3 abas (Locadora, Usuários, WhatsApp). Build OK. Push origin/dev. |
