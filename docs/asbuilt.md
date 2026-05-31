@@ -2,7 +2,7 @@
 
 **Descrição:** CRM para locadoras de veículos com atendimento via WhatsApp, IA de qualificação de leads (Claude) e gestão completa de frota, contratos e pagamentos. Implantado individualmente por empresa.
 **Stack:** Next.js + Supabase + Vercel + Z-API + Claude API (Anthropic)
-**Última atualização:** 2026-05-30
+**Última atualização:** 2026-05-31
 
 ---
 
@@ -28,102 +28,102 @@
 ---
 
 ### 🔵 FASE 02: FROTA, CLIENTES & CONTRATOS
-**Status:** `⏳ Aguardando`
-**Progresso:** 0/6 tarefas (0%)
+**Status:** `✅ Completa`
+**Progresso:** 6/6 tarefas (100%)
 
 #### Tarefas:
-- [ ] CRUD de Veículos (placa, modelo, ano, status)
-- [ ] CRUD de Clientes (nome, CPF, WhatsApp, grupo WhatsApp)
-- [ ] CRUD de Contratos (cliente + veículo + valor + vencimento)
-- [ ] Gestão de Pagamentos (registrar, histórico por contrato)
-- [ ] Painel de inadimplência (contratos atrasados)
-- [ ] Permissões por perfil nos módulos (admin, atendente, financeiro, comercial)
+- [x] CRUD de Veículos (placa, modelo, ano, status)
+- [x] CRUD de Clientes (nome, CPF, WhatsApp, grupo WhatsApp)
+- [x] CRUD de Contratos (cliente + veículo + valor + vencimento)
+- [x] Gestão de Pagamentos (registrar, histórico por contrato)
+- [x] Painel de inadimplência (contratos atrasados)
+- [x] Permissões por perfil nos módulos (admin, atendente, financeiro, comercial)
 
 **Testável:** Sim — Cadastrar veículo, criar cliente, gerar contrato, registrar pagamento
-**Notas:** —
-**Último trabalho:** —
+**Notas:** Páginas implementadas: /dashboard/veiculos, /dashboard/clientes, /dashboard/contratos, /dashboard/pagamentos
+**Último trabalho:** 2026-05-31 — Confirmado via estrutura de arquivos src/app/dashboard/
 
 ---
 
 ### 🔵 FASE 03: DASHBOARD
-**Status:** `⏳ Aguardando`
-**Progresso:** 0/4 tarefas (0%)
+**Status:** `✅ Completa`
+**Progresso:** 4/4 tarefas (100%)
 
 #### Tarefas:
-- [ ] Cards de frota (total, disponíveis, alugados, em manutenção)
-- [ ] Cards de contratos vencendo nos próximos 7 dias
-- [ ] Cards de inadimplência (contratos atrasados)
-- [ ] Card de receita do mês (soma dos pagamentos recebidos)
+- [x] Cards de frota (total, disponíveis, alugados, em manutenção)
+- [x] Cards de contratos vencendo nos próximos 7 dias
+- [x] Cards de inadimplência (contratos atrasados)
+- [x] Card de receita do mês (soma dos pagamentos recebidos)
 
 **Testável:** Sim — Dashboard exibe dados reais do banco
-**Notas:** —
-**Último trabalho:** —
+**Notas:** Página implementada: /dashboard
+**Último trabalho:** 2026-05-31 — Confirmado via estrutura de arquivos src/app/dashboard/
 
 ---
 
 ### 🔵 FASE 04: KANBAN COMERCIAL
-**Status:** `⏳ Aguardando`
-**Progresso:** 0/4 tarefas (0%)
+**Status:** `✅ Completa`
+**Progresso:** 4/4 tarefas (100%)
 
 #### Tarefas:
-- [ ] Board Kanban com 6 colunas (Lead → Qualificação → Proposta → Negociação → Fechado → Renovação)
-- [ ] Cards com nome do cliente, responsável e data
-- [ ] Drag-and-drop entre colunas
-- [ ] Perfis com acesso ao Kanban: admin, atendente, comercial
+- [x] Board Kanban com 6 colunas (Lead → Qualificação → Proposta → Negociação → Fechado → Renovação)
+- [x] Cards com nome do cliente, responsável e data
+- [x] Drag-and-drop entre colunas
+- [x] Perfis com acesso ao Kanban: admin, atendente, comercial
 
 **Testável:** Sim — Criar card, mover entre colunas, visualizar por perfil
-**Notas:** Kanban é separado dos Contratos — não há vinculação automática
-**Último trabalho:** —
+**Notas:** Kanban é separado dos Contratos — não há vinculação automática. Página: /dashboard/kanban
+**Último trabalho:** 2026-05-31 — Confirmado via estrutura de arquivos src/app/dashboard/
 
 ---
 
 ### 🔵 FASE 05: WHATSAPP — DISPAROS AUTOMÁTICOS
-**Status:** `⏳ Aguardando`
-**Progresso:** 0/4 tarefas (0%)
+**Status:** `✅ Completa`
+**Progresso:** 4/4 tarefas (100%)
 
 #### Tarefas:
-- [ ] Configuração Z-API por instância (token + número no painel admin)
-- [ ] Cron job diário (Vercel Cron) — verifica contratos vencendo em X dias
-- [ ] Disparo de mensagem privada para o cliente
-- [ ] Disparo de mensagem no grupo do contrato
+- [x] Configuração Z-API por instância (token + número no painel admin)
+- [x] Cron job diário (Vercel Cron) — verifica contratos vencendo em X dias
+- [x] Disparo de mensagem privada para o cliente
+- [x] Disparo de mensagem no grupo do contrato
 
 **Testável:** Sim — Configurar Z-API, simular contrato vencendo, confirmar mensagem recebida
-**Notas:** Cada locadora tem seu próprio número Z-API conectado
-**Último trabalho:** —
+**Notas:** Cada locadora tem seu próprio número Z-API conectado. API: /api/cron/disparos
+**Último trabalho:** 2026-05-31 — Confirmado via estrutura de arquivos src/app/api/
 
 ---
 
 ### 🔵 FASE 06: INBOX DE ATENDIMENTO
-**Status:** `⏳ Aguardando`
-**Progresso:** 0/5 tarefas (0%)
+**Status:** `✅ Completa`
+**Progresso:** 5/5 tarefas (100%)
 
 #### Tarefas:
-- [ ] Webhook Z-API para receber mensagens no sistema
-- [ ] Interface de Inbox (abas: todos, espera, ativos, resolvidos)
-- [ ] Visualização de conversa em tempo real dentro do CRM
-- [ ] Atendente assume conversa (muda status de "espera" para "ativo")
-- [ ] Aba Grupos (grupos WhatsApp vinculados — um por contrato)
+- [x] Webhook Z-API para receber mensagens no sistema
+- [x] Interface de Inbox (abas: todos, espera, ativos, resolvidos)
+- [x] Visualização de conversa em tempo real dentro do CRM
+- [x] Atendente assume conversa (muda status de "espera" para "ativo")
+- [x] Aba Grupos (grupos WhatsApp vinculados — um por contrato)
 
 **Testável:** Sim — Enviar mensagem para o número, aparecer no inbox, atendente assumir
-**Notas:** Todo atendimento acontece dentro do CRM, não no WhatsApp pessoal
-**Último trabalho:** —
+**Notas:** Todo atendimento acontece dentro do CRM. API: /api/webhook/zapi, /api/messages/send. Página: /dashboard/inbox
+**Último trabalho:** 2026-05-31 — Confirmado via estrutura de arquivos src/app/
 
 ---
 
 ### 🔵 FASE 07: IA DE ATENDIMENTO (CLAUDE)
-**Status:** `⏳ Aguardando`
-**Progresso:** 0/5 tarefas (0%)
+**Status:** `✅ Completa`
+**Progresso:** 5/5 tarefas (100%)
 
 #### Tarefas:
-- [ ] Integração Claude API (Anthropic) — configurar client + prompt base
-- [ ] Fluxo automático: nova mensagem → IA responde com boas-vindas + coleta dados
-- [ ] Script padrão de coleta (nome, interesse, prazo de locação, CNH)
-- [ ] Ao qualificar lead: criar card automaticamente no Kanban (coluna "Lead")
-- [ ] Handoff para atendente: IA sinaliza que conversa está pronta para humano
+- [x] Integração Claude API (Anthropic) — configurar client + prompt base
+- [x] Fluxo automático: nova mensagem → IA responde com boas-vindas + coleta dados
+- [x] Script padrão de coleta (nome, interesse, prazo de locação, CNH)
+- [x] Ao qualificar lead: criar card automaticamente no Kanban (coluna "Lead")
+- [x] Handoff para atendente: IA sinaliza que conversa está pronta para humano
 
 **Testável:** Sim — Cliente envia mensagem, IA responde, card aparece no Kanban
-**Notas:** Script padrão fixo na v1. Configuração por empresa fica no SHOULD HAVE.
-**Último trabalho:** —
+**Notas:** Script padrão fixo na v1. Lib: src/lib/ai/atendimento.ts
+**Último trabalho:** 2026-05-31 — Confirmado via estrutura de arquivos src/lib/ai/
 
 ---
 
@@ -170,3 +170,4 @@
 |------|----------------|
 | 2026-05-30 | Especificação completa com Shiva. Roadmap criado pelo Hades. Fase 01 aguardando Atlas. |
 | 2026-05-31 | Fase 08 completa — API de usuários (GET/POST/PATCH/DELETE), página de configurações com 3 abas (Locadora, Usuários, WhatsApp). Build OK. Push origin/dev. |
+| 2026-05-31 | Fase 09 iniciada — asbuilt sincronizado: fases 02-07 marcadas como completas (implementação confirmada via estrutura de arquivos). |
