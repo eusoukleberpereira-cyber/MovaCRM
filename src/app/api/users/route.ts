@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createClient } from "@supabase/supabase-js"
 import { createClient as createClientSSR } from "@/lib/supabase/server"
+import { stripHtml } from "@/lib/sanitize"
+import { randomBytes } from "crypto"
 
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -46,13 +48,16 @@ export async function POST(request: NextRequest) {
     const caller = await getCallerAdmin()
     if (!caller) return NextResponse.json({ error: "Forbidden" }, { status: 403 })
 
-    const { name, email, role } = await request.json()
+    const raw = await request.json()
+    const name  = stripHtml(raw.name  ?? "")
+    const email = (raw.email ?? "").trim().toLowerCase()
+    const role  = raw.role ?? ""
 
     if (!name || !email || !role) {
       return NextResponse.json({ error: "name, email e role são obrigatórios" }, { status: 400 })
     }
 
-    const tempPassword = `MovaCRM@${new Date().getFullYear()}!`
+    const tempPassword = `Mova@${randomBytes(6).toString("base64url")}`
 
     const { data: newUser, error: authErr } = await supabaseAdmin.auth.admin.createUser({
       email,

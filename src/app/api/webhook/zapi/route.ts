@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createClient } from "@supabase/supabase-js"
 import { processarMensagem } from "@/lib/ai/atendimento"
+import { stripHtml } from "@/lib/sanitize"
 
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -8,6 +9,15 @@ const supabaseAdmin = createClient(
 )
 
 export async function POST(request: NextRequest) {
+  // Verificar token secreto do webhook (SEC-003)
+  const webhookSecret = process.env.WEBHOOK_SECRET
+  if (webhookSecret) {
+    const token = request.headers.get("x-webhook-token") ?? request.nextUrl.searchParams.get("token")
+    if (token !== webhookSecret) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+  }
+
   try {
     const body = await request.json()
 
@@ -27,7 +37,7 @@ export async function POST(request: NextRequest) {
     // Extrair número e metadados
     const rawPhone   = body.phone ?? ""
     const phone      = rawPhone.replace(/@.*/, "")
-    const chatName   = body.senderName ?? body.chatName ?? phone
+    const chatName   = stripHtml(body.senderName ?? body.chatName ?? phone)
     const instanceId = body.instanceId ?? ""
 
     if (!phone) return NextResponse.json({ ok: true })
