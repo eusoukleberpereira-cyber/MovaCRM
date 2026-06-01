@@ -46,6 +46,7 @@ export default function ClientesPage() {
   const [activeTab, setActiveTab] = useState<"dados" | "documentos">("dados")
 
   const canEdit = ["admin", "atendente"].includes(profile?.role ?? "")
+  const [saveError, setSaveError] = useState<string | null>(null)
 
   const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -87,11 +88,12 @@ export default function ClientesPage() {
   }
 
   async function onSubmit(data: FormData) {
-    if (editing) {
-      await supabase.from("clientes").update(data).eq("id", editing.id)
-    } else {
-      await supabase.from("clientes").insert({ ...data, locadora_id: profile!.locadora_id })
-    }
+    setSaveError(null)
+    const { error } = editing
+      ? await supabase.from("clientes").update(data).eq("id", editing.id)
+      : await supabase.from("clientes").insert({ ...data, locadora_id: profile!.locadora_id })
+
+    if (error) { setSaveError(error.message); return }
     setModalOpen(false)
     load()
   }
@@ -179,6 +181,11 @@ export default function ClientesPage() {
         {/* Aba Dados */}
         {activeTab === "dados" && (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 max-h-[70vh] overflow-y-auto pr-1">
+          {saveError && (
+            <div className="rounded-md bg-red-50 border border-red-200 px-3 py-2 text-sm text-red-600">
+              {saveError}
+            </div>
+          )}
 
           {/* Dados pessoais */}
           <div>
