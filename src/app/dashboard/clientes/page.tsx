@@ -5,15 +5,31 @@ import { useProfile } from "@/hooks/use-profile"
 import { Button } from "@/components/ui/button"
 import { Modal } from "@/components/ui/modal"
 import { Input } from "@/components/ui/input"
+import { Select } from "@/components/ui/select"
 import { Plus, Pencil, Search } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 
+const UF_LIST = ["AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA","PB","PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO"]
+const CNH_CATS = ["A","B","C","D","E","AB","AC"]
+
 const schema = z.object({
   name:     z.string().min(2, "Nome obrigatório"),
   cpf:      z.string().optional(),
+  rg:       z.string().optional(),
   whatsapp: z.string().min(10, "WhatsApp inválido"),
+  logradouro:  z.string().optional(),
+  numero:      z.string().optional(),
+  complemento: z.string().optional(),
+  bairro:      z.string().optional(),
+  cidade:      z.string().optional(),
+  estado:      z.string().optional(),
+  cep:         z.string().optional(),
+  cnh_numero:                    z.string().optional(),
+  cnh_categoria:                 z.string().optional(),
+  cnh_data_primeira_habilitacao: z.string().optional(),
+  cnh_data_validade:             z.string().optional(),
 })
 type FormData = z.infer<typeof schema>
 type Cliente  = FormData & { id: string }
@@ -49,13 +65,20 @@ export default function ClientesPage() {
 
   function openCreate() {
     setEditing(null)
-    reset({ name: "", cpf: "", whatsapp: "" })
+    reset({ name: "", cpf: "", rg: "", whatsapp: "", logradouro: "", numero: "", complemento: "", bairro: "", cidade: "", estado: "", cep: "", cnh_numero: "", cnh_categoria: "", cnh_data_primeira_habilitacao: "", cnh_data_validade: "" })
     setModalOpen(true)
   }
 
   function openEdit(c: Cliente) {
     setEditing(c)
-    reset({ name: c.name, cpf: c.cpf, whatsapp: c.whatsapp })
+    reset({
+      name: c.name, cpf: c.cpf, rg: c.rg, whatsapp: c.whatsapp,
+      logradouro: c.logradouro, numero: c.numero, complemento: c.complemento,
+      bairro: c.bairro, cidade: c.cidade, estado: c.estado, cep: c.cep,
+      cnh_numero: c.cnh_numero, cnh_categoria: c.cnh_categoria,
+      cnh_data_primeira_habilitacao: c.cnh_data_primeira_habilitacao,
+      cnh_data_validade: c.cnh_data_validade,
+    })
     setModalOpen(true)
   }
 
@@ -127,12 +150,57 @@ export default function ClientesPage() {
       </div>
 
       <Modal open={modalOpen} onClose={() => setModalOpen(false)}
-             title={editing ? "Editar Cliente" : "Novo Cliente"}>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <Input label="Nome completo" {...register("name")} error={errors.name?.message} />
-          <Input label="CPF" placeholder="000.000.000-00" {...register("cpf")} />
-          <Input label="WhatsApp" placeholder="5511999999999" {...register("whatsapp")} error={errors.whatsapp?.message} />
-          <div className="flex gap-3 pt-2">
+             title={editing ? "Editar Cliente" : "Novo Cliente"}
+             width="max-w-2xl">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 max-h-[70vh] overflow-y-auto pr-1">
+
+          {/* Dados pessoais */}
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-widest text-muted mb-3">Dados Pessoais</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="sm:col-span-2">
+                <Input label="Nome completo *" {...register("name")} error={errors.name?.message} />
+              </div>
+              <Input label="CPF" placeholder="000.000.000-00" {...register("cpf")} />
+              <Input label="RG" placeholder="00.000.000-0" {...register("rg")} />
+              <Input label="WhatsApp *" placeholder="5511999999999" {...register("whatsapp")} error={errors.whatsapp?.message} />
+            </div>
+          </div>
+
+          {/* Endereço */}
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-widest text-muted mb-3">Endereço</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="sm:col-span-2">
+                <Input label="Logradouro" placeholder="Rua, Avenida, Travessa..." {...register("logradouro")} />
+              </div>
+              <Input label="Número" placeholder="123" {...register("numero")} />
+              <Input label="Complemento" placeholder="Apto 42, Bloco B..." {...register("complemento")} />
+              <Input label="Bairro" placeholder="Centro" {...register("bairro")} />
+              <Input label="CEP" placeholder="00000-000" {...register("cep")} />
+              <Input label="Cidade" placeholder="São Paulo" {...register("cidade")} />
+              <Select label="Estado" {...register("estado")}>
+                <option value="">Selecione</option>
+                {UF_LIST.map(uf => <option key={uf} value={uf}>{uf}</option>)}
+              </Select>
+            </div>
+          </div>
+
+          {/* Habilitação */}
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-widest text-muted mb-3">Habilitação (CNH)</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <Input label="Número de Registro" placeholder="00000000000" {...register("cnh_numero")} />
+              <Select label="Categoria" {...register("cnh_categoria")}>
+                <option value="">Selecione</option>
+                {CNH_CATS.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+              </Select>
+              <Input label="Data da 1ª Habilitação" type="date" {...register("cnh_data_primeira_habilitacao")} />
+              <Input label="Data de Validade" type="date" {...register("cnh_data_validade")} />
+            </div>
+          </div>
+
+          <div className="flex gap-3 pt-2 border-t border-border sticky bottom-0 bg-surface pb-1">
             <Button type="submit" disabled={isSubmitting}>
               {isSubmitting ? "Salvando..." : editing ? "Salvar alterações" : "Cadastrar cliente"}
             </Button>
