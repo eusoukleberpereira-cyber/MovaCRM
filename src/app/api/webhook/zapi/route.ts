@@ -89,8 +89,8 @@ export async function POST(request: NextRequest) {
       remetente:      "cliente",
     })
 
-    // ── IA responde apenas quando atendimento está em "espera" ──────────────
-    if (atendStatus === "espera" && process.env.ANTHROPIC_API_KEY) {
+    // ── IA responde apenas quando atendimento está em "espera" e lead ainda não qualificado ──
+    if (atendStatus === "espera" && !jaTemKanban && process.env.ANTHROPIC_API_KEY) {
       try {
         // Buscar histórico completo para contexto
         const { data: historico } = await supabaseAdmin
