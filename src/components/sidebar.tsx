@@ -15,7 +15,7 @@ const NAV = [
   { href: "/dashboard/clientes",  label: "Clientes",   icon: Users,           roles: ["admin","atendente","financeiro","comercial"] },
   { href: "/dashboard/contratos", label: "Contratos",  icon: FileText,        roles: ["admin","atendente","financeiro","comercial"] },
   { href: "/dashboard/kanban",    label: "Kanban",     icon: Columns3,        roles: ["admin","atendente","comercial"] },
-  { href: "/dashboard/inbox",     label: "Inbox",      icon: MessageCircle,   roles: ["admin","atendente","comercial"] },
+  { href: "/dashboard/inbox",     label: "Atendimento", icon: MessageCircle,   roles: ["admin","atendente","comercial"] },
   { href: "/dashboard/pagamentos",    label: "Pagamentos",    icon: CreditCard,      roles: ["admin","financeiro"] },
   { href: "/dashboard/configuracoes", label: "Configurações", icon: Settings,        roles: ["admin"] },
 ]
