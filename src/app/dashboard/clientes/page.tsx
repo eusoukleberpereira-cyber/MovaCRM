@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button"
 import { Modal } from "@/components/ui/modal"
 import { Input } from "@/components/ui/input"
 import { Select } from "@/components/ui/select"
-import { Plus, Pencil, Search } from "lucide-react"
+import { ClienteDocumentos } from "@/components/clientes/ClienteDocumentos"
+import { Plus, Pencil, Search, FolderOpen, FileEdit } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
@@ -42,6 +43,7 @@ export default function ClientesPage() {
   const [loading,   setLoading]   = useState(true)
   const [modalOpen, setModalOpen] = useState(false)
   const [editing,   setEditing]   = useState<Cliente | null>(null)
+  const [activeTab, setActiveTab] = useState<"dados" | "documentos">("dados")
 
   const canEdit = ["admin", "atendente"].includes(profile?.role ?? "")
 
@@ -65,12 +67,14 @@ export default function ClientesPage() {
 
   function openCreate() {
     setEditing(null)
+    setActiveTab("dados")
     reset({ name: "", cpf: "", rg: "", whatsapp: "", logradouro: "", numero: "", complemento: "", bairro: "", cidade: "", estado: "", cep: "", cnh_numero: "", cnh_categoria: "", cnh_data_primeira_habilitacao: "", cnh_data_validade: "" })
     setModalOpen(true)
   }
 
   function openEdit(c: Cliente) {
     setEditing(c)
+    setActiveTab("dados")
     reset({
       name: c.name, cpf: c.cpf, rg: c.rg, whatsapp: c.whatsapp,
       logradouro: c.logradouro, numero: c.numero, complemento: c.complemento,
@@ -152,6 +156,28 @@ export default function ClientesPage() {
       <Modal open={modalOpen} onClose={() => setModalOpen(false)}
              title={editing ? "Editar Cliente" : "Novo Cliente"}
              width="max-w-2xl">
+
+        {/* Abas — só mostra documentos ao editar cliente existente */}
+        {editing && (
+          <div className="flex gap-1 mb-4 border-b border-border -mt-1 pb-0">
+            {([["dados", FileEdit, "Dados"], ["documentos", FolderOpen, "Documentos"]] as const).map(([key, Icon, label]) => (
+              <button key={key} type="button" onClick={() => setActiveTab(key)}
+                className={`flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-all ${activeTab === key ? "border-accent text-accent" : "border-transparent text-muted hover:text-text"}`}>
+                <Icon size={13} />{label}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Aba Documentos */}
+        {activeTab === "documentos" && editing && (
+          <div className="max-h-[65vh] overflow-y-auto pr-1">
+            <ClienteDocumentos clienteId={editing.id} />
+          </div>
+        )}
+
+        {/* Aba Dados */}
+        {activeTab === "dados" && (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 max-h-[70vh] overflow-y-auto pr-1">
 
           {/* Dados pessoais */}
@@ -207,6 +233,7 @@ export default function ClientesPage() {
             <Button type="button" variant="secondary" onClick={() => setModalOpen(false)}>Cancelar</Button>
           </div>
         </form>
+        )}
       </Modal>
     </div>
   )
