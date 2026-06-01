@@ -44,7 +44,7 @@ const schema = z.object({
   valor_mensal:    z.number().min(1, "Valor inválido"),
   data_inicio:     z.string().min(1, "Data obrigatória"),
   data_vencimento: z.string().min(1, "Data obrigatória"),
-  dia_semana:      z.number({ invalid_type_error: "Selecione o dia" }).min(0).max(6),
+  dia_semana:      z.coerce.number().min(0, "Selecione o dia").max(6),
 })
 type FormData = z.infer<typeof schema>
 
