@@ -108,7 +108,7 @@ export default function ConfiguracoesPage() {
         .from("locadoras")
         .select("name, logo_url, zapi_instance, zapi_token")
         .eq("id", profile.locadora_id)
-        .single(),
+        .maybeSingle(),
       fetch("/api/users").then(r => r.json()),
       supabase
         .from("disparos")
@@ -147,8 +147,7 @@ export default function ConfiguracoesPage() {
     setSavingLoc(true)
     await supabase
       .from("locadoras")
-      .update({ name: data.name, logo_url: data.logo_url || null })
-      .eq("id", profile.locadora_id)
+      .upsert({ id: profile.locadora_id, name: data.name, logo_url: data.logo_url || null })
     setSavingLoc(false)
     showFeedback("✅ Dados da locadora salvos.")
   }
@@ -159,8 +158,7 @@ export default function ConfiguracoesPage() {
     setSavingZapi(true)
     await supabase
       .from("locadoras")
-      .update({ zapi_instance: data.zapi_instance, zapi_token: data.zapi_token })
-      .eq("id", profile.locadora_id)
+      .upsert({ id: profile.locadora_id, zapi_instance: data.zapi_instance, zapi_token: data.zapi_token })
     setSavingZapi(false)
     showFeedback("✅ Configuração Z-API salva.")
   }
