@@ -18,11 +18,11 @@ export async function GET(request: NextRequest) {
   }
 
   // Dia de hoje em Brasília (UTC-3)
-  const agora        = new Date()
-  const brasilia     = new Date(agora.getTime() - 3 * 60 * 60 * 1000)
-  const diaSemanaHoje = brasilia.getDay() // 0=Dom … 6=Sab
-  const nomeDia      = DIAS_SEMANA[diaSemanaHoje]
-  const resumo       = { enviados: 0, erros: 0, locadoras: 0 }
+  const agora         = new Date()
+  const brasilia      = new Date(agora.getTime() - 3 * 60 * 60 * 1000)
+  const diaSemanaHoje = brasilia.getDay() // 0=Dom … 6=Sáb
+  const nomeDia       = DIAS_SEMANA[diaSemanaHoje]
+  const resumo        = { enviados: 0, erros: 0, locadoras: 0 }
 
   try {
     const { data: locadoras } = await supabaseAdmin
@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
           id,
           valor_mensal,
           dia_semana,
-          clientes (name, whatsapp, grupo_whatsapp_id),
+          clientes (name, grupo_whatsapp_id),
           veiculos  (placa, modelo)
         `)
         .eq("locadora_id", locadora.id)
@@ -56,66 +56,38 @@ export async function GET(request: NextRequest) {
       for (const contrato of contratos as any[]) {
         const cliente = contrato.clientes
         const veiculo = contrato.veiculos
-        const valor   = Number(contrato.valor_mensal).toLocaleString("pt-BR", { minimumFractionDigits: 2 })
 
-        // ── Mensagem privada ─────────────────────────────────────────────
-        const msgPrivada = [
-          `Olá, *${cliente.name}*! 👋`,
+        if (!cliente.grupo_whatsapp_id) continue
+
+        const valor = Number(contrato.valor_mensal).toLocaleString("pt-BR", { minimumFractionDigits: 2 })
+
+        const msgGrupo = [
+          `📋 *Aviso de Pagamento*`,
           ``,
+          `Olá, *${cliente.name}*! 👋`,
           `Seu pagamento de *R$ ${valor}* vence *HOJE* (${nomeDia}).`,
           ``,
           `🚗 Veículo: *${veiculo.modelo}* (Placa: ${veiculo.placa})`,
           ``,
-          `Qualquer dúvida é só falar! 🙏`,
+          `Obrigado! 🙏`,
         ].join("\n")
 
-        const resPrivado = await enviarZAPI(
+        const resGrupo = await enviarZAPI(
           locadora.zapi_instance,
           locadora.zapi_token,
-          cliente.whatsapp,
-          msgPrivada
+          cliente.grupo_whatsapp_id,
+          msgGrupo
         )
 
         await supabaseAdmin.from("disparos").insert({
           locadora_id: locadora.id,
           contrato_id: contrato.id,
-          tipo:        "vencimento_privado",
-          status:      resPrivado.ok ? "enviado" : "erro",
-          mensagem:    msgPrivada,
+          tipo:        "vencimento_grupo",
+          status:      resGrupo.ok ? "enviado" : "erro",
+          mensagem:    msgGrupo,
         })
 
-        resPrivado.ok ? resumo.enviados++ : resumo.erros++
-
-        // ── Mensagem no grupo ────────────────────────────────────────────
-        if (cliente.grupo_whatsapp_id) {
-          const msgGrupo = [
-            `📋 *Aviso de Pagamento*`,
-            ``,
-            `Olá, *${cliente.name}*! 👋`,
-            `Seu pagamento de *R$ ${valor}* vence *HOJE* (${nomeDia}).`,
-            ``,
-            `🚗 Veículo: *${veiculo.modelo}* (Placa: ${veiculo.placa})`,
-            ``,
-            `Obrigado! 🙏`,
-          ].join("\n")
-
-          const resGrupo = await enviarZAPI(
-            locadora.zapi_instance,
-            locadora.zapi_token,
-            cliente.grupo_whatsapp_id,
-            msgGrupo
-          )
-
-          await supabaseAdmin.from("disparos").insert({
-            locadora_id: locadora.id,
-            contrato_id: contrato.id,
-            tipo:        "vencimento_grupo",
-            status:      resGrupo.ok ? "enviado" : "erro",
-            mensagem:    msgGrupo,
-          })
-
-          resGrupo.ok ? resumo.enviados++ : resumo.erros++
-        }
+        resGrupo.ok ? resumo.enviados++ : resumo.erros++
       }
     }
 
