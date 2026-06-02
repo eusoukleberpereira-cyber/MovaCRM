@@ -9,6 +9,14 @@ const supabaseAdmin = createClient(
 
 export async function POST(request: NextRequest) {
   try {
+    const webhookSecret = process.env.ZAPI_WEBHOOK_SECRET
+    if (webhookSecret) {
+      const incoming = request.nextUrl.searchParams.get("secret") ?? request.headers.get("x-webhook-secret")
+      if (incoming !== webhookSecret) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+      }
+    }
+
     const body = await request.json()
 
     // Ignorar mensagens enviadas pelo próprio número
