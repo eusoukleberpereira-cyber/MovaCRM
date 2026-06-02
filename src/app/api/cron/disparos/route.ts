@@ -59,19 +59,23 @@ export async function GET(request: NextRequest) {
       if (!contratos?.length) continue
 
       for (const contrato of contratos as any[]) {
-        const cliente       = contrato.clientes
-        const veiculo       = contrato.veiculos
+        const cliente = contrato.clientes
+        const veiculo = contrato.veiculos
+
+        if (!cliente.grupo_whatsapp_id) continue
+
         const vencimento    = new Date(contrato.data_vencimento)
         const diasRestantes = Math.ceil(
           (vencimento.getTime() - hoje.getTime()) / (1000 * 60 * 60 * 24)
         )
         const dataFormatada = format(vencimento, "dd/MM/yyyy", { locale: ptBR })
 
-        // ── Mensagem privada ──────────────────────────────────────────────────
-        const msgPrivada = [
-          `Olá, *${cliente.name}*! 👋`,
+        const msgGrupo = [
+          `📋 *Aviso de Vencimento*`,
           ``,
+          `Olá, *${cliente.name}*! 👋`,
           `Seu contrato de locação está próximo do vencimento:`,
+          ``,
           `🚗 Veículo: *${veiculo.modelo}* (Placa: ${veiculo.placa})`,
           `📅 Vencimento: *${dataFormatada}* (em ${diasRestantes} dia${diasRestantes > 1 ? "s" : ""})`,
           `💰 Valor mensal: R$ ${Number(contrato.valor_mensal).toFixed(2)}`,
@@ -79,49 +83,22 @@ export async function GET(request: NextRequest) {
           `Entre em contato para renovação ou maiores informações.`,
         ].join("\n")
 
-        const resPrivado = await enviarZAPI(
+        const resGrupo = await enviarZAPI(
           locadora.zapi_instance,
           locadora.zapi_token,
-          cliente.whatsapp,
-          msgPrivada
+          cliente.grupo_whatsapp_id,
+          msgGrupo
         )
 
         await supabaseAdmin.from("disparos").insert({
           locadora_id: locadora.id,
           contrato_id: contrato.id,
-          tipo:        "vencimento_privado",
-          status:      resPrivado.ok ? "enviado" : "erro",
-          mensagem:    msgPrivada,
+          tipo:        "vencimento_grupo",
+          status:      resGrupo.ok ? "enviado" : "erro",
+          mensagem:    msgGrupo,
         })
 
-        resPrivado.ok ? resumo.enviados++ : resumo.erros++
-
-        // ── Mensagem no grupo ─────────────────────────────────────────────────
-        if (cliente.grupo_whatsapp_id) {
-          const msgGrupo = [
-            `📋 *Aviso de Vencimento*`,
-            ``,
-            `Contrato do veículo *${veiculo.modelo}* (Placa: ${veiculo.placa})`,
-            `vence em *${dataFormatada}* (${diasRestantes} dia${diasRestantes > 1 ? "s" : ""}).`,
-          ].join("\n")
-
-          const resGrupo = await enviarZAPI(
-            locadora.zapi_instance,
-            locadora.zapi_token,
-            cliente.grupo_whatsapp_id,
-            msgGrupo
-          )
-
-          await supabaseAdmin.from("disparos").insert({
-            locadora_id: locadora.id,
-            contrato_id: contrato.id,
-            tipo:        "vencimento_grupo",
-            status:      resGrupo.ok ? "enviado" : "erro",
-            mensagem:    msgGrupo,
-          })
-
-          resGrupo.ok ? resumo.enviados++ : resumo.erros++
-        }
+        resGrupo.ok ? resumo.enviados++ : resumo.erros++
       }
     }
 
