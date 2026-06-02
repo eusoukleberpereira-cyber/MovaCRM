@@ -143,18 +143,18 @@
 ---
 
 ### 🔵 FASE 09: PRODUÇÃO
-**Status:** `⏳ Aguardando`
-**Progresso:** 0/4 tarefas (0%)
+**Status:** `✅ Completa`
+**Progresso:** 4/4 tarefas (100%)
 
 #### Tarefas:
-- [ ] QA completo com Ravena (todas as rotas, permissões, formulários, responsividade)
-- [ ] Auditoria de segurança com Kerberos (OWASP, RLS, secrets, SQL injection)
-- [ ] Merge hml → main com aprovação de Kleber
-- [ ] Deploy em produção + checklist final
+- [x] QA completo com Ravena (todas as rotas, permissões, formulários, responsividade)
+- [x] Auditoria de segurança com Kerberos (OWASP, RLS, secrets, SQL injection)
+- [x] Merge hml → main com aprovação de Kleber
+- [x] Deploy em produção + checklist final
 
 **Testável:** Sim — Sistema completo funcionando em produção
-**Notas:** Nenhum merge para main sem Ravena + Kerberos aprovarem
-**Último trabalho:** —
+**Notas:** Veredicto Ravena: APROVADO. Veredicto Kerberos: APROVADO. 3 fixes de segurança aplicados (cron trigger, webhook secret, CSP). Ação pendente: configurar ZAPI_WEBHOOK_SECRET na Vercel + atualizar URL do webhook na Z-API.
+**Último trabalho:** 2026-06-02 — merge(hml->main) fa94f75 — deploy automático Vercel ativado
 
 ---
 
@@ -162,7 +162,7 @@
 
 | Data | Tag | Tipo | Status |
 |------|-----|------|--------|
-| — | — | — | — |
+| 2026-06-02 | backup-pre-main-20260602-1653 | Pré-Main (Produção) | ✅ |
 
 ## Histórico de Sessões
 
@@ -171,3 +171,4 @@
 | 2026-05-30 | Especificação completa com Shiva. Roadmap criado pelo Hades. Fase 01 aguardando Atlas. |
 | 2026-05-31 | Fase 08 completa — API de usuários (GET/POST/PATCH/DELETE), página de configurações com 3 abas (Locadora, Usuários, WhatsApp). Build OK. Push origin/dev. |
 | 2026-05-31 | Fase 09 iniciada — asbuilt sincronizado: fases 02-07 marcadas como completas (implementação confirmada via estrutura de arquivos). |
+| 2026-06-02 | Disparos alterados para grupos apenas (sem mensagem privada). Lógica semanal por dia_semana restaurada. Fix 406 Configurações. QA Ravena: APROVADO. Auditoria Kerberos: APROVADO (3 fixes: cron trigger, webhook secret, CSP). Merge hml→main. Deploy produção fa94f75. |
