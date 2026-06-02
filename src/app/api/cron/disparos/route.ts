@@ -1,42 +1,38 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createClient } from "@supabase/supabase-js"
-import { addDays, format } from "date-fns"
-import { ptBR } from "date-fns/locale"
 
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
 
-const DIAS_ANTES = 3
+const DIAS_SEMANA = ["Domingo","Segunda-feira","Terça-feira","Quarta-feira","Quinta-feira","Sexta-feira","Sábado"]
 
 export async function GET(request: NextRequest) {
-  const authHeader    = request.headers.get("authorization")
-  const isVercelCron  = request.headers.get("x-vercel-cron") === "1"
-  const isManual      = authHeader === `Bearer ${process.env.CRON_SECRET}`
+  const authHeader   = request.headers.get("authorization")
+  const isVercelCron = request.headers.get("x-vercel-cron") === "1"
+  const isManual     = authHeader === `Bearer ${process.env.CRON_SECRET}`
 
   if (!isVercelCron && !isManual) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
-  const hoje      = new Date()
-  const limite    = addDays(hoje, DIAS_ANTES)
-  const hojeISO   = hoje.toISOString().split("T")[0]
-  const limiteISO = limite.toISOString().split("T")[0]
-  const resumo    = { enviados: 0, erros: 0, locadoras: 0 }
+  // Dia de hoje em Brasília (UTC-3)
+  const agora         = new Date()
+  const brasilia      = new Date(agora.getTime() - 3 * 60 * 60 * 1000)
+  const diaSemanaHoje = brasilia.getDay() // 0=Dom … 6=Sáb
+  const nomeDia       = DIAS_SEMANA[diaSemanaHoje]
+  const resumo        = { enviados: 0, erros: 0, locadoras: 0 }
 
   try {
     const { data: locadoras } = await supabaseAdmin
       .from("locadoras")
       .select("id, name, zapi_token, zapi_instance")
-      .not("zapi_token", "is", null)
+      .not("zapi_token",    "is", null)
       .not("zapi_instance", "is", null)
 
     if (!locadoras?.length) {
-      return NextResponse.json({
-        message: "Nenhuma locadora com Z-API configurado.",
-        resumo,
-      })
+      return NextResponse.json({ message: "Nenhuma locadora com Z-API configurado.", resumo })
     }
 
     for (const locadora of locadoras) {
@@ -46,15 +42,14 @@ export async function GET(request: NextRequest) {
         .from("contratos")
         .select(`
           id,
-          data_vencimento,
           valor_mensal,
-          clientes (name, whatsapp, grupo_whatsapp_id),
+          dia_semana,
+          clientes (name, grupo_whatsapp_id),
           veiculos  (placa, modelo)
         `)
         .eq("locadora_id", locadora.id)
-        .eq("status", "ativo")
-        .gte("data_vencimento", hojeISO)
-        .lte("data_vencimento", limiteISO)
+        .eq("status",      "ativo")
+        .eq("dia_semana",  diaSemanaHoje)
 
       if (!contratos?.length) continue
 
@@ -64,23 +59,17 @@ export async function GET(request: NextRequest) {
 
         if (!cliente.grupo_whatsapp_id) continue
 
-        const vencimento    = new Date(contrato.data_vencimento)
-        const diasRestantes = Math.ceil(
-          (vencimento.getTime() - hoje.getTime()) / (1000 * 60 * 60 * 24)
-        )
-        const dataFormatada = format(vencimento, "dd/MM/yyyy", { locale: ptBR })
+        const valor = Number(contrato.valor_mensal).toLocaleString("pt-BR", { minimumFractionDigits: 2 })
 
         const msgGrupo = [
-          `📋 *Aviso de Vencimento*`,
+          `📋 *Aviso de Pagamento*`,
           ``,
           `Olá, *${cliente.name}*! 👋`,
-          `Seu contrato de locação está próximo do vencimento:`,
+          `Seu pagamento de *R$ ${valor}* vence *HOJE* (${nomeDia}).`,
           ``,
           `🚗 Veículo: *${veiculo.modelo}* (Placa: ${veiculo.placa})`,
-          `📅 Vencimento: *${dataFormatada}* (em ${diasRestantes} dia${diasRestantes > 1 ? "s" : ""})`,
-          `💰 Valor mensal: R$ ${Number(contrato.valor_mensal).toFixed(2)}`,
           ``,
-          `Entre em contato para renovação ou maiores informações.`,
+          `Obrigado! 🙏`,
         ].join("\n")
 
         const resGrupo = await enviarZAPI(
@@ -103,9 +92,10 @@ export async function GET(request: NextRequest) {
     }
 
     return NextResponse.json({
-      message:      "Cron executado com sucesso.",
+      message:      `Cron executado — ${nomeDia}.`,
+      dia:          nomeDia,
       resumo,
-      executado_em: new Date().toISOString(),
+      executado_em: agora.toISOString(),
     })
   } catch (error: any) {
     console.error("[CRON] Erro:", error)
@@ -120,15 +110,14 @@ async function enviarZAPI(
   message: string
 ): Promise<{ ok: boolean }> {
   try {
-    const url = `https://api.z-api.io/instances/${instance}/token/${token}/send-text`
-    const res = await fetch(url, {
-      method:  "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Client-Token": token,
-      },
-      body: JSON.stringify({ phone, message }),
-    })
+    const res = await fetch(
+      `https://api.z-api.io/instances/${instance}/token/${token}/send-text`,
+      {
+        method:  "POST",
+        headers: { "Content-Type": "application/json", "Client-Token": token },
+        body:    JSON.stringify({ phone, message }),
+      }
+    )
     return { ok: res.ok }
   } catch {
     return { ok: false }
