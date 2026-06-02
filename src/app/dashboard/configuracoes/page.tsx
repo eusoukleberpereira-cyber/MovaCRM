@@ -226,9 +226,7 @@ export default function ConfiguracoesPage() {
     setRunningCron(true)
     setCronMsg("")
     try {
-      const res  = await fetch("/api/cron/disparos", {
-        headers: { Authorization: "Bearer movacrm-cron-2026-secret" },
-      })
+      const res  = await fetch("/api/cron/trigger", { method: "POST" })
       const data = await res.json()
       setCronMsg(
         res.ok
